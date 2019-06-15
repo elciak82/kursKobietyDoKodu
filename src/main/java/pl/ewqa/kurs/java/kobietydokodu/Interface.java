@@ -1,6 +1,5 @@
 package pl.ewqa.kurs.java.kobietydokodu;
 
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,57 +8,50 @@ import java.util.Scanner;
 
 public class Interface {
     public static void main(String[] args) {
-        System.out.println("Podaj imię Kotka.");
-        String catName = getUserInput();
-        System.out.println("Podaj imię opiekuna.");
-        String keeperName = getUserInput();
-        String dateFormat = "yyyy.MM.dd";
-        Date bornDateAsDate;
-
-        do {
-            System.out.println("Podaj datę urodzin Kotka w formacie " + dateFormat + ".");
-            String bornDateAsString = getUserInput();
-            bornDateAsDate = parseStringToDate(dateFormat, bornDateAsString);
-        } while (bornDateAsDate == null);
-
-        Float weightAsFloat;
-        do {
-            System.out.println("Podaj wagę Kotka w kilogranach (np 5.45).");
-            String weightAsString = getUserInput();
-            weightAsFloat = parseStringToFloat(weightAsString);
-        } while (weightAsFloat == null);
-
         Kot kot = new Kot();
-        kot.setName(catName);
-        kot.setKeeperName(keeperName);
-        kot.setBornDate(bornDateAsDate);
-        kot.setWeight(weightAsFloat);
-        kot.presentYourself();
-    }
+        System.out.println("Podaj imię Kotka.");
+        kot.setName(getUserInput());
+        System.out.println("Podaj imię opiekuna.");
+        kot.setKeeperName(getUserInput());
+        String dateFormat = "YYYY.MM.DD";
 
+        do {
+            System.out.println("Podaj datę urodzin Kotka w formacie RRRR.MM.DD.");
+            String bornDateAsString = getUserInput();
+            kot.setBornDate(parseStringToDate(dateFormat, bornDateAsString));
+        } while (kot.getBornDate() == null);
+
+        do {
+            System.out.println("Podaj wagę Kotka w kilogranach.");
+            String weightAsString = getUserInput();
+            kot.setWeight(parseStringToFloat(weightAsString));
+        } while (kot.getWeight() == null);
+
+//        kot.presentYourself();
+    }
         static Scanner scanner = new Scanner(System.in);
 
-        public static String getUserInput(){
+        private static String getUserInput(){
             return scanner.nextLine();
         } //pobieranie wartości, którą wpisze user
 
-        public static Date parseStringToDate(String dateFormat, String dateAsString){
+        private static Date parseStringToDate(String dateFormat, String dateAsString){
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             Date date = null;
             try{
                 date = sdf.parse(dateAsString);
             } catch (ParseException e) {
-                System.out.println("Nieprawidłowy format daty!");
+                System.out.println("Format daty jest nieprawidłowy. Przykładowy format daty: 2019.04.17.");
             }
             return date;
         }
         
-        public static Float parseStringToFloat(String weightAsString) {
+        private static Float parseStringToFloat(String weightAsString) {
             Float weight = null;
             try {
                 weight = Float.parseFloat(weightAsString);
             }catch (NumberFormatException e) {
-                System.out.println("Nieprawidłowy format! Wpisz liczbę!");
+                System.out.println("Format wagi jest nieprawidłowy. Przykładowy format wagi: 5.6.");
             }
             return weight;
         }   
