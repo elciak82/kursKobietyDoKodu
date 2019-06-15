@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Kot {
 
-    String name;
-    Date bornDate;
-    Float weight;
-    String keeperName;
+    private String name;
+    private Date bornDate;
+    private Float weight;
+    private String keeperName;
 
 
     public Date getBornDate() {
@@ -39,6 +39,6 @@ public class Kot {
     }
 
     public void presentYourself(){
-        System.out.println(String.format("Nazywam się %s, a moim opiekunem jest %s.", name, keeperName));
+        System.out.println(String.format("Nazywam się %s, moim opiekunem jest %s, urodziłam się %s, ważę %s.", name, keeperName, bornDate, weight));
     }
 }
