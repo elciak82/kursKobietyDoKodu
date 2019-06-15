@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Interface {
     public static void main(String[] args) {
@@ -35,14 +37,19 @@ public class Interface {
             return scanner.nextLine();
         } //pobieranie wartości, którą wpisze user
 
-        private static Date parseStringToDate(String dateFormat, String dateAsString){
+        private static Date parseStringToDate(String dateFormat, String dateAsString) {
+            Pattern pattern = Pattern.compile("yyyy-mm-dd"); //TODO popraw lekcja 4
+            Matcher matcher = pattern.matcher(dateAsString); //TODO popraw lekcja 4
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             Date date = null;
-            try{
-                date = sdf.parse(dateAsString);
-            } catch (ParseException e) {
-                System.out.println("Format daty jest nieprawidłowy. Przykładowy format daty: 2019.04.17.");
-            }
+            if (matcher.matches()) { //TODO popraw lekcja 4
+                try {
+                    date = sdf.parse(dateAsString);
+                } catch (ParseException e) {
+                    System.out.println("Format daty jest nieprawidłowy. Przykładowy format daty: 2019.04.17.");
+                }
+            } else
+                System.out.println("dupa"); //TODO popraw lekcja 4
             return date;
         }
         
