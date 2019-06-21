@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 public class Interface {
     public static void main(String[] args) {
         KotDAO kotDAO = new KotDAO();
-         do {
-             String userInput = appMenu();
+        do {
+            String userInput = appMenu();
             if (userInput.equals("1")) {
                 Kot kot = new Kot();
                 System.out.println("Podaj imię Kotka.");
@@ -37,12 +37,12 @@ public class Interface {
             if (userInput.equals("2")) {
                 System.out.println(kotDAO.getAllCatsFromList());
             }
+            if (userInput.equals("x")) {
+                break;
 
-             if (userInput.equals("x")) {
-                 break;
-             }
-
-        }while(true); //TODO dokończ
+            }
+        }
+        while (true);
 
 //        boolean equals = appMenu().equals("[12x]");
     }
@@ -87,14 +87,16 @@ public class Interface {
 //            if(bornDateAsDate.compareTo(today) > 0){
 //        System.out.println("Kotek sie jeszcze nie urodził?");
 
-    private static String appMenu(){
-        String menu = "Dodaj Kota - wybierz 1" + "\n"+
+    private static String appMenu() {
+        String menu = "Dodaj Kota - wybierz 1" + "\n" +
                 "Pokaż Koty - wybierz 2" + "\n" +
                 "Zamknij porgram - wybierz x";
         System.out.println(menu);
 //        Pattern pattern = Pattern.compile("[12x]");
 //        Matcher matcher = pattern.matcher(getUserInput());
-        return getUserInput(); //TODO dokończ
-
+//        if (!matcher.matches()) {
+//            System.out.println("Nieprawidłowa wartość.");
+//        }
+        return getUserInput();
     }
 }
