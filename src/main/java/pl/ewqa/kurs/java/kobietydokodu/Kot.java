@@ -10,6 +10,10 @@ public class Kot {
     private String keeperName;
 
 
+    public String getName() {
+        return name;
+    }
+
     public Date getBornDate() {
         return bornDate;
     }
