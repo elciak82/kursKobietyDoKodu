@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 public class Interface {
     public static void main(String[] args) {
+        KotDAO kotDAO = new KotDAO();
         Kot kot = new Kot();
         System.out.println("Podaj imię Kotka.");
         kot.setName(getUserInput());
@@ -29,8 +30,9 @@ public class Interface {
             kot.setWeight(parseStringToFloat(weightAsString));
         } while (kot.getWeight() == null);
 
-//        kot.presentYourself();
+        kotDAO.addCatToList(kot);
     }
+
         static Scanner scanner = new Scanner(System.in);
 
         private static String getUserInput(){
