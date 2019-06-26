@@ -1,102 +1,105 @@
 package pl.ewqa.kurs.java.kobietydokodu;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Interface {
-    public static void main(String[] args) {
-        KotDAO kotDAO = new KotDAO();
+    private static KotDAO kotDAO = new KotDAO();
+
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws FileNotFoundException {
+        String userInput;
         do {
-            String userInput = appMenu();
-            if (userInput.equals("1")) {
-                Kot kot = new Kot();
-                System.out.println("Podaj imię Kotka.");
-                kot.setName(getUserInput());
-                System.out.println("Podaj imię opiekuna.");
-                kot.setKeeperName(getUserInput());
-                String dateFormat = "YYYY.MM.DD";
-
-                do {
-                    System.out.println("Podaj datę urodzin Kotka w formacie RRRR.MM.DD.");
-                    String bornDateAsString = getUserInput();
-                    kot.setBornDate(parseStringToDate(dateFormat, bornDateAsString));
-                } while (kot.getBornDate() == null);
-
-                do {
-                    System.out.println("Podaj wagę Kotka w kilogramach.");
-                    String weightAsString = getUserInput();
-                    kot.setWeight(parseStringToFloat(weightAsString));
-                } while (kot.getWeight() == null);
-
-                kotDAO.addCatToList(kot);
+            System.out.println();
+            System.out.println("Wybierz, co chcesz zrobić, a następnie zatwierdź enterem:");
+            System.out.println("[1] Dodaj nowego kota");
+            System.out.println("[2] Pokaż wszystkie koty");
+            System.out.println("[x] Zakończ");
+            userInput = getUserInput();
+            if (userInput.equals("1")){
+                addCat();
+            } else if (userInput.equals("2")){
+                showCatsList();
             }
-
-            if (userInput.equals("2")) {
-                System.out.println(kotDAO.getAllCatsFromList());
-            }
-            if (userInput.equals("x")) {
-                break;
-
-            }
-        }
-        while (true);
-
-//        boolean equals = appMenu().equals("[12x]");
+        }while(userInput.equalsIgnoreCase("x"));
     }
-
-    static Scanner scanner = new Scanner(System.in);
 
     private static String getUserInput() {
         return scanner.nextLine();
     } //pobieranie wartości, którą wpisze user
 
-    private static Date parseStringToDate(String dateFormat, String dateAsString) {
-        Pattern pattern = Pattern.compile("^((?:19|20)\\d\\d)[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$");
-        Matcher matcher = pattern.matcher(dateAsString);
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        Date date = null;
-        if (matcher.matches()) {
-            try {
-                date = sdf.parse(dateAsString);
-            } catch (ParseException e) {
-                System.out.println("Format daty jest nieprawidłowy. Przykładowy format daty: '2019.04.17'.");
+    private static void addCat() throws FileNotFoundException {
+        System.out.println();
+        System.out.println("#########################################################");
+        System.out.println("######                 DODAJ  KOTA                 ######");
+        System.out.println("#########################################################");
+        Kot kot = new Kot();
+        System.out.println("Podaj imię Kotka.");
+        kot.setName(getUserInput());
+
+        System.out.println("Podaj imię opiekuna.");
+        kot.setKeeperName(getUserInput());
+
+        Pattern datePattern = Pattern.compile("^((?:19|20)\\d\\d)[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+        String bornDateAsString;
+        do {
+            System.out.println("Podaj datę urodzin Kotka w formacie RRRR.MM.DD.");
+            bornDateAsString = getUserInput();
+            if (datePattern.matcher(bornDateAsString).matches()) {
+                try {
+                    kot.setBornDate(sdf.parse(bornDateAsString));
+                } catch (ParseException e) {
+                    System.out.println("Format daty jest nieprawidłowy. Przykładowy format daty: '2019.04.17'.");
+                }
             }
-        } else
-            System.out.println("Jesteż pewny, że to prawidłowa data? Spróbuj jeszcze raz!. Przykładowy format daty: '2019.04.17'.");
-        return date;
+        } while (kot.getBornDate() == null);
+
+        Pattern weightPattern = Pattern.compile("[0-9]+(\\.[0-9]+)?");
+        String weightAsString;
+        do {
+            System.out.print("Podaj wagę kota: ");
+            weightAsString = getUserInput();
+
+            if (weightPattern.matcher(weightAsString).matches()) {
+                kot.setWeight(Float.valueOf(weightAsString));
+            }
+        } while (kot.getWeight() == null);
+
+        kotDAO.addCatToList(kot);
+        kotDAO.printWriter(kot);
+        System.out.println("Dziękuję, teraz wiem o kocie naprawdę wszystko! Dodałem go do naszego zbioru.");
     }
 
-    private static Float parseStringToFloat(String weightAsString) {
-        Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)?");
-        Matcher matcher = pattern.matcher(weightAsString);
-        Float weight = null;
-        if (matcher.matches()) {
-            try {
-                weight = Float.parseFloat(weightAsString);
-            } catch (NumberFormatException e) {
-                System.out.println("Format wagi jest nieprawidłowy. Przykładowy format wagi: 5.6.");
-            }
+    private static void showCatsList() {
+        System.out.println();
+        System.out.println("#########################################################");
+        System.out.println("######                 LISTA KOTÓW                 ######");
+        System.out.println("#########################################################");
+
+        Kot kot;
+        for (int i = 0; i < kotDAO.cats.size(); i++) {
+            kot = kotDAO.getCat(i);
+            System.out.println(i + ":" + kot.getName());
         }
-        return weight;
-    }
-//
-//    Date today = Calendar.getInstance().getTime();
-//            if(bornDateAsDate.compareTo(today) > 0){
-//        System.out.println("Kotek sie jeszcze nie urodził?");
+        System.out.println();
+        Pattern countCat = Pattern.compile("[0-9]+");
+        String userChoice;
+        do {
+            System.out.print("Którego kota chcesz poznać bliżej? ");
+            userChoice = getUserInput();
+        } while (!countCat.matcher(userChoice).matches());
 
-    private static String appMenu() {
-        String menu = "Dodaj Kota - wybierz 1" + "\n" +
-                "Pokaż Koty - wybierz 2" + "\n" +
-                "Zamknij porgram - wybierz x";
-        System.out.println(menu);
-//        Pattern pattern = Pattern.compile("[12x]");
-//        Matcher matcher = pattern.matcher(getUserInput());
-//        if (!matcher.matches()) {
-//            System.out.println("Nieprawidłowa wartość.");
-//        }
-        return getUserInput();
+        int catNumber = Integer.parseInt(userChoice);
+        if (catNumber < kotDAO.cats.size()) {
+            Kot catFromList = kotDAO.getCat(catNumber);
+            System.out.println("Wybrany kot ma na imie " + catFromList.getName() + ", waży " + catFromList.getWeight() + ", urodził się " + catFromList.getBornDate().toString() + ", a opiekuje się nim " + catFromList.getKeeperName());
+        } else {
+            System.out.println("Niestety, nie znalazłem kota o wybranym numerze :( Sprobój ponownie lub go dodaj!");
+        }
     }
 }
